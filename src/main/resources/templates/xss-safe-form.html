@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">XSS Prevention Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg: #f4f7f6;
+            --card: #ffffff;
+            --primary: #0f5132;
+            --error: #dc3545;
+            --success: #198754;
+            --border: #cce5ff;
+            --input-border: #a8dadc;
+            --radius: 12px;
+            --shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        *{box-sizing:border-box;}
+        body{margin:0;font-family:'Inter',system-ui,Arial,sans-serif;background:var(--bg);color:#333;line-height:1.6;}
+        .wrap{max-width:640px;margin:40px auto;padding:16px;}
+        .card{
+            background:var(--card);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            border:1px solid var(--border);
+            padding:24px;
+            overflow:hidden;
+        }
+
+        h1{color:var(--primary);margin-bottom:16px;text-align:center;font-size:22px;font-weight:600;}
+        p{margin-bottom:12px;}
+        label{margin-bottom:6px;display:block;color:#343a40;font-weight:500;}
+        textarea{
+            width:100%;
+            padding:12px;
+            border:1px solid var(--input-border);
+            border-radius:6px;
+            font-size:14px;
+            resize:vertical;
+            box-sizing:border-box;
+            transition:border-color 0.2s;
+        }
+        textarea:focus{border-color:var(--primary);outline:none;}
+
+        button{
+            padding:12px 20px;
+            background-color:#0d6efd;
+            color:white;
+            border:none;
+            border-radius:6px;
+            font-size:16px;
+            cursor:pointer;
+            font-weight:500;
+            transition:all 0.2s;
+        }
+        button:hover{background-color:#0a58ca; transform:translateY(-2px);}
+
+        .error-message, #inputError{
+            color:var(--error);
+            font-weight:600;
+            margin-top:8px;
+            font-size:14px;
+            display:block;
+        }
+
+        .success-message{
+            color:var(--success);
+            font-weight:600;
+            margin-top:10px;
+            font-size:14px;
+        }
+
+        .info-message{
+            color:#0f5132;
+            font-style:italic;
+            margin-top:10px;
+            text-align:center;
+            font-size:14px;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="card">
+        <h1 th:text="${title}">XSS Prevention Input</h1>
+        <p th:text="${description}">Enter any message. This form prevents XSS through server-side validation and proper output encoding.</p>
+
+        <p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
+
+        <form th:action="@{/xss-safe-submit}" method="post" th:object="${xssForm}" onsubmit="return validateForm()">
+            <label for="userInput">Your Message:</label>
+            <textarea id="userInput" name="userInput" rows="5" required></textarea>
+            <small id="inputError" class="error-message"></small>
+            <button type="submit">Submit Safe Message</button>
+        </form>
+    </div>
+    <a th:href="@{/dashboard}">Back to Dashboard</a>
+</div>
+
+<script>
+    function validateForm() {
+        const userInput = document.getElementById('userInput').value;
+        const inputError = document.getElementById('inputError');
+
+        if (userInput.trim() === '') {
+            inputError.textContent = 'Message cannot be empty!';
+            return false;
+        } else {
+            inputError.textContent = '';
+        }
+
+        const forbiddenPatterns = /<\s*script[^>]*>|javascript:|on\w+=/i;
+        if (forbiddenPatterns.test(userInput)) {
+            inputError.textContent = 'Potentially malicious content detected! Avoid script tags or event handlers.';
+            return false;
+        }
+
+        return true;
+    }
+</script>
+</body>
+</html>
