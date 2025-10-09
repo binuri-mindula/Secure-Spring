@@ -12,11 +12,12 @@ prevention for vulnerabilities. Key features:
    - Cross-Site Request Forgery (CSRF)
    - Data aggregation attack (inference issue)
    - Server-Side Request Forgery (SSRF)
-Technology stack: 
-• Java 17 
-• Spring Boot (Spring MVC, Spring Data JPA / Hibernate) 
-• Thymeleaf templates 
-• MySQL (development DB) 
-• Maven 
-• SonarQube (local Sonar server) for SAST 
-• OWASP ZAP for DAST
+     
+## Technology stack: 
+- Java 17 
+- Spring Boot (Spring MVC, Spring Data JPA / Hibernate) 
+- Thymeleaf templates 
+- MySQL (development DB) 
+- Maven 
+- SonarQube (local Sonar server) for SAST 
+- OWASP ZAP for DAST
