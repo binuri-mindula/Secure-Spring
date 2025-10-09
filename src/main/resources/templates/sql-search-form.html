@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">SQL Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #e0e7ff);
+            margin: 0;
+            padding: 50px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 650px;
+            background: #fff;
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .description-box {
+            background-color: #eaf3f7;
+            border-left: 5px solid #2563eb;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 18px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            background-color: #1e40af;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .vulnerable-note, .safe-note {
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-top: 20px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .vulnerable-note {
+            background-color: #fef2f2;
+            border-left: 5px solid #dc2626;
+            color: #b91c1c;
+        }
+
+        .vulnerable-note code {
+            background-color: #fee2e2;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #991b1b;
+        }
+
+        .safe-note {
+            background-color: #ecfdf5;
+            border-left: 5px solid #10b981;
+            color: #065f46;
+        }
+
+        .links-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .links-section p {
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .links-section a {
+            display: inline-block;
+            margin: 5px 8px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            background-color: #f3f4f6;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .links-section a:hover {
+            background-color: #2563eb;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${title}">SQL Search</h1>
+    <div class="description-box" th:text="${description}"></div>
+
+    <form th:action="${actionUrl}" method="post">
+        <label for="username">Search Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter username (e.g., admin)"/>
+        <button type="submit">Search</button>
+    </form>
+
+    <div th:if="${actionUrl == '/sql-search-vulnerable'}" class="vulnerable-note">
+        **WARNING: This form is VULNERABLE to SQL Injection.**<br>
+        Try payloads like: <code>admin' OR '1'='1</code> or <code>admin' UNION SELECT 1, 'HACKED_USERNAME', 'PASSWORD_STOLEN', 'ADMIN_ROLE' FROM DUAL --</code>
+    </div>
+
+    <div th:unless="${actionUrl == '/sql-search-vulnerable'}" class="safe-note">
+        This form uses safe practices (JpaRepository, HQL, or Stored Procedures) and is NOT vulnerable to SQL Injection.
+        Injected SQL will be treated as part of the search string.
+    </div>
+
+    <div class="links-section">
+        <p>Navigate to different search methods:</p>
+        <a href="/sql-safe-jpa">Safe Search (JpaRepository)</a>
+        <a href="/sql-safe-hql">Safe Search (HQL)</a>
+        <a href="/sql-safe-sp">Safe Search (Stored Procedure)</a>
+        <a href="/dashboard">Go Back to Dashboard</a>
+    </div>
+</div>
+</body>
+</html>

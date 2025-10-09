@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title th:text="${title}">SQL Search Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg-1: #f5f7fb;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --accent: #2563eb;
+            --danger: #dc2626;
+            --success: #10b981;
+            --panel-radius: 14px;
+            --shadow: 0 12px 30px rgba(16,24,40,0.08);
+            --glass: rgba(255,255,255,0.6);
+        }
+
+        *{box-sizing:border-box}
+        html,body{height:100%; margin:0; font-family:'Poppins',system-ui,Arial,sans-serif; background:linear-gradient(180deg,var(--bg-1),#eaf0ff); color:#111}
+
+        .wrap{
+            max-width:980px;
+            margin:36px auto;
+            padding:22px;
+        }
+
+        .card{
+            background:var(--card);
+            border-radius:var(--panel-radius);
+            box-shadow:var(--shadow);
+            overflow:hidden;
+        }
+
+        .card-header{
+            background: linear-gradient(90deg,var(--accent),#00a4ff);
+            color:#fff;
+            padding:22px 26px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+        }
+        .card-header h1{
+            margin:0;
+            font-size:20px;
+            font-weight:600;
+            letter-spacing:0.2px;
+        }
+        .card-header .subtitle{
+            font-size:13px;
+            opacity:0.95;
+        }
+
+        .card-body{
+            padding:26px;
+        }
+
+        .query-info{
+            text-align:center;
+            color:var(--muted);
+            font-style:italic;
+            margin-bottom:18px;
+        }
+
+        .panel{
+            background: linear-gradient(180deg,var(--glass),#fff);
+            border-radius:10px;
+            padding:16px;
+            border:1px solid rgba(37,99,235,0.06);
+            margin-bottom:18px;
+            color:#133;
+        }
+
+        /* table */
+        .table-wrap{
+            overflow-x:auto;
+            border-radius:10px;
+            margin-top:6px;
+            border:1px solid #eef2ff;
+        }
+        table{
+            width:100%;
+            border-collapse:collapse;
+            min-width:640px;
+            background:#fff;
+        }
+        th,td{
+            padding:12px 14px;
+            text-align:left;
+            border-bottom:1px solid #f1f5f9;
+            font-size:14px;
+            color:#111827;
+        }
+        thead th{
+            background:#fbfdff;
+            color:#0f172a;
+            font-weight:600;
+            letter-spacing:0.2px;
+        }
+        tbody tr:nth-child(even){ background:#fbfbff }
+        tbody tr:hover{ background:#f8fbff }
+
+        .no-results{
+            text-align:center;
+            padding:20px;
+            border-radius:8px;
+            border:1px dashed #dbeafe;
+            background:#ffffff;
+            color:var(--muted);
+            margin-top:10px;
+        }
+
+        .badge{
+            display:inline-block;
+            padding:6px 10px;
+            border-radius:999px;
+            font-weight:600;
+            font-size:13px;
+        }
+
+        .warning{
+            color:var(--danger);
+            font-weight:600;
+            margin-top:20px;
+            padding:12px;
+            border-radius:8px;
+            background: #fff1f2;
+            border:1px solid rgba(220,38,38,0.08);
+            text-align:center;
+        }
+
+        .success{
+            color:var(--success);
+            font-weight:600;
+            margin-top:20px;
+            padding:12px;
+            border-radius:8px;
+            background:#ecfdf5;
+            border:1px solid rgba(16,185,129,0.08);
+            text-align:center;
+        }
+
+        .links{
+            display:flex;
+            gap:10px;
+            justify-content:center;
+            margin-top:26px;
+            flex-wrap:wrap;
+        }
+        .links a{
+            display:inline-block;
+            padding:10px 16px;
+            border-radius:10px;
+            background:#f3f6ff;
+            color:var(--accent);
+            text-decoration:none;
+            font-weight:600;
+            border:1px solid rgba(37,99,235,0.06);
+            transition:transform .14s ease, background .14s;
+        }
+        .links a:hover{ transform:translateY(-4px); background:var(--accent); color:#fff; }
+
+        /* small / responsive */
+        @media (max-width:720px){
+            .card-header{flex-direction:column; align-items:flex-start; gap:8px}
+            th,td{padding:10px}
+            .wrap{padding:16px}
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="card" role="region" aria-labelledby="results-title">
+        <div class="card-header">
+            <div>
+                <h1 id="results-title" th:text="${title}">SQL Search Results</h1>
+                <div class="subtitle">SecureApp — Demonstration of safe vs vulnerable search endpoints</div>
+            </div>
+            <div class="badge" th:if="${title.contains('Vulnerable')}" style="background:#fff6f6;color:#b91c1c;border:1px solid rgba(220,38,38,0.06)">VULNERABLE</div>
+            <div class="badge" th:unless="${title.contains('Vulnerable')}" style="background:#f0fdf4;color:#065f46;border:1px solid rgba(16,185,129,0.06)">SAFE</div>
+        </div>
+
+        <div class="card-body">
+            <p class="query-info">Search query: "<span th:text="${query}">admin</span>"</p>
+
+            <div th:if="${users.isEmpty()}" class="no-results" role="status" aria-live="polite">
+                <p>No users found matching your query.</p>
+            </div>
+
+            <div th:unless="${users.isEmpty()}">
+                <h2 style="margin:0 0 8px 0; color:#111827; font-size:16px">Users Found</h2>
+
+                <div class="table-wrap" role="table" aria-label="Search results table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Password</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.id}">1</td>
+                            <td th:text="${user.username}">admin</td>
+                            <!-- NOTE: Showing passwords only for SQLi demo purposes -->
+                            <td th:text="${user.password}">••••••</td>
+                            <td th:text="${user.role}">ADMIN</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div th:if="${title.contains('Vulnerable')}" class="warning" role="alert">
+                ⚠️ <strong>WARNING:</strong> This endpoint is intentionally vulnerable to SQL Injection for demonstration purposes.
+                Injection payloads can return unintended or sensitive data (e.g., all users, or manipulated rows).
+            </div>
+
+            <div th:unless="${title.contains('Vulnerable')}" class="success" role="status">
+                ✅ This endpoint is protected. SQL injection attempts are treated as literal input and do not execute.
+            </div>
+
+            <div class="links" aria-label="navigation links">
+                <a href="/sql-safe-jpa">Safe Search (JpaRepository)</a>
+                <a href="/sql-safe-hql">Safe Search (HQL)</a>
+                <a href="/sql-safe-sp">Safe Search (Stored Procedure)</a>
+                <a href="/sql-search-vulnerable" style="background:#fff6f6;color:#b91c1c;border:1px solid rgba(220,38,38,0.06)">Vulnerable Demo</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
