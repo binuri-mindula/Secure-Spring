@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Aggregation Search Results</title>
+</head>
+<body>
+<h1>Search Results</h1>
+<p>Query: Age=<span th:text="${queryAge}"></span>, City=<span th:text="${queryCity}"></span>, Blood Type=<span th:text="${queryBloodType}"></span></p>
+<p>Number of matching records: <strong th:text="${resultCount}"></strong></p>
+<p th:if="${message}" style="color: red;" th:text="${message}"></p>
+</body>
+</html>

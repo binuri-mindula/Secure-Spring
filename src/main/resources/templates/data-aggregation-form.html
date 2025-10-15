@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Data Aggregation Vulnerability</title>
+</head>
+<body>
+<h1>Data Aggregation (Inference Issue)</h1>
+<p>This page allows you to search for patient records by combining non-sensitive criteria.</p>
+<p>By repeatedly querying and observing the count of results, an attacker might infer sensitive information.</p>
+<form action="/data-aggregation-search" method="post">
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" /><br><br>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" /><br><br>
+
+    <label for="bloodType">Blood Type:</label>
+    <input type="text" id="bloodType" name="bloodType" /><br><br>
+
+    <button type="submit">Search</button>
+</form>
+<!--<p>-->
+<!--    **Demonstration Idea:**<br>-->
+<!--    1. Search for: Age=30, City=Sydney, Blood Type=A+ (You'll see a count of 2 - John Doe, Alice Green)<br>-->
+<!--    2. Now, how to infer Alice's diagnosis (COVID-19) without direct access?<br>-->
+<!--    If you had a list of possible diagnoses for Sydney patients, you could query:<br>-->
+<!--    - Age=30, City=Sydney, Blood Type=A+, Diagnosis=Flu (Count: 1 - John Doe)<br>-->
+<!--    - Age=30, City=Sydney, Blood Type=A+, Diagnosis=COVID-19 (Count: 1 - Alice Green)-->
+<!--    This requires a more complex backend than just 'findByAgeAndCityAndBloodType' but shows the concept.-->
+<!--    For this simplified demo, the vulnerability is in providing *too many filtering options* and only returning counts.-->
+<!--</p>-->
+</body>
+</html>

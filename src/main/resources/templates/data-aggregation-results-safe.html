@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Aggregation Search Results (Safe)</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f0fe, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            width: 480px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2563eb;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #444;
+            font-size: 15px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: #111;
+            font-weight: 700;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        a:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .info {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .error {
+            color: #e11d48;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Search Results (Safe)</h1>
+
+    <p>
+        <strong>Query:</strong><br>
+        Age = <span th:text="${queryAge}"></span>,
+        City = <span th:text="${queryCity}"></span>,
+        Blood Type = <span th:text="${queryBloodType}"></span>
+    </p>
+
+    <p th:if="${resultCount > 0}">
+        Number of matching records: <strong th:text="${resultCount}"></strong>
+    </p>
+
+    <p th:if="${resultCount == 0 && message == null}" class="info">
+        No matching records found, or the group is too small to display exact results due to privacy restrictions.
+    </p>
+
+    <p th:if="${message}" class="error" th:text="${message}"></p>
+
+    <a href="/data-aggregation-safe">Perform Another Search</a>
+</div>
+</body>
+</html>
