@@ -1,0 +1,1 @@
+It's uploaded successfully. Look at the provided link:/uploads/shell.jsp. When I click this link,
