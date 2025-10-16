@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title th:text="${title}">Upload Status</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg: #f3f6ff;
+            --card: #ffffff;
+            --accent: #2563eb;
+            --muted: #6b7280;
+            --danger: #dc2626;
+            --success: #10b981;
+            --radius: 12px;
+            --shadow: 0 12px 30px rgba(16,24,40,0.06);
+        }
+
+        *{box-sizing:border-box}
+        html,body{height:100%;margin:0;font-family:'Poppins',system-ui,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#eef4ff);color:#0f172a}
+        .wrap{max-width:820px;margin:40px auto;padding:16px}
+
+        .card{
+            background:var(--card);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            overflow:hidden;
+        }
+
+        .card-header{
+            padding:18px 22px;
+            background:linear-gradient(90deg,var(--accent),#00a4ff);
+            color:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+        }
+        .card-header h1{margin:0;font-size:18px;font-weight:600}
+        .card-header .meta{font-size:13px;opacity:.95}
+
+        .card-body{padding:22px}
+        .lead{color:var(--muted);margin-bottom:14px;font-size:15px}
+
+        .message {
+            font-weight:700;
+            padding:12px 14px;
+            border-radius:10px;
+            margin-bottom:16px;
+            display:block;
+        }
+        .message.error{
+            color:var(--danger);
+            background: #fff1f2;
+            border:1px solid rgba(220,38,38,0.06);
+        }
+        .message.success{
+            color:var(--success);
+            background: #ecfdf5;
+            border:1px solid rgba(16,185,129,0.06);
+        }
+
+        .file-link-box{
+            margin-top:12px;
+            padding:16px;
+            border-radius:10px;
+            background:linear-gradient(180deg,#fbfdff,#fff);
+            border:1px dashed rgba(15,23,42,0.04);
+            text-align:center;
+        }
+        .file-link-box p{margin:8px 0;color:#0f172a}
+        .file-link-box a{
+            display:inline-block;
+            padding:8px 14px;
+            border-radius:8px;
+            background:#f3f6ff;
+            color:var(--accent);
+            text-decoration:none;
+            font-weight:700;
+            border:1px solid rgba(37,99,235,0.06);
+        }
+        .file-link-box a:hover{background:var(--accent);color:#fff;transform:translateY(-2px)}
+
+        .vuln-note{
+            margin-top:12px;
+            color:var(--danger);
+            font-weight:700;
+            background:#fff6f6;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid rgba(220,38,38,0.06);
+        }
+
+        .safe-note{
+            margin-top:12px;
+            color:var(--success);
+            font-weight:700;
+            background:#f0fff6;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid rgba(16,185,129,0.06);
+        }
+
+        .links{
+            margin-top:22px;
+            display:flex;
+            gap:10px;
+            justify-content:center;
+            flex-wrap:wrap;
+        }
+        .links a{
+            padding:10px 16px;
+            border-radius:10px;
+            background:#f8fafc;
+            color:var(--accent);
+            text-decoration:none;
+            font-weight:700;
+            border:1px solid rgba(37,99,235,0.06);
+        }
+        .links a:hover{transform:translateY(-3px);background:var(--accent);color:#fff}
+
+        .meta-small{font-size:13px;color:var(--muted);margin-top:8px}
+
+        @media (max-width:720px){
+            .card-body{padding:16px}
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="card" role="region" aria-labelledby="status-title">
+        <div class="card-header">
+            <h1 id="status-title" th:text="${title}">File Upload Status</h1>
+            <div class="meta" th:if="${actionUrl}" th:text="${actionUrl}">/upload</div>
+        </div>
+
+        <div class="card-body">
+            <p class="lead">Status of the most recent file upload attempt. Links shown below reflect how the application stored or served the file.</p>
+
+            <!-- Message (success or error) -->
+            <p th:if="${message}" th:classappend="${isError} ? ' message error' : ' message success'" th:text="${message}">Upload result message</p>
+
+            <!-- File link box -->
+            <div th:if="${filePath}" class="file-link-box" role="group" aria-label="Uploaded file link">
+                <p>Try to access the uploaded file:</p>
+                <p>
+                    <a th:href="${filePath}" th:text="${filePath}" target="_blank" rel="noopener noreferrer">/path/to/uploaded/file</a>
+                </p>
+
+                <div th:if="${filePath.contains('/uploads-vulnerable/')}" class="vuln-note" role="alert">
+                    ⚠️ This is a direct public link — demonstrates the vulnerable behavior (publicly accessible upload directory).
+                </div>
+
+                <div th:if="${filePath.contains('/download-safe/')}" class="safe-note" role="status">
+                    ✅ Secure download link — served by the application with access checks (recommended).
+                </div>
+
+                <div class="meta-small">If file does not load, check server logs or file storage permissions.</div>
+            </div>
+
+            <!-- No filePath (no file) helpful hint -->
+            <div th:unless="${filePath}" class="file-link-box" aria-live="polite">
+                <p>No downloadable file available. If the upload succeeded but link is missing, verify storage configuration.</p>
+            </div>
+
+            <div class="links" role="navigation" aria-label="upload navigation links">
+                <a href="/upload-vulnerable">Upload another file (Vulnerable)</a>
+                <a href="/upload-safe">Upload another file (Secure)</a>
+                <a href="/dashboard">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
