@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SSRF Safe Demo | SecureApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg-a: #f3f6ff;
+            --card: #ffffff;
+            --accent: #2563eb;
+            --muted: #6b7280;
+            --success: #10b981;
+            --danger: #dc2626;
+            --radius: 12px;
+            --shadow: 0 12px 30px rgba(16,24,40,0.06);
+        }
+
+        *{box-sizing:border-box}
+        html,body{height:100%; margin:0; font-family:'Poppins',system-ui,Arial,sans-serif; background:linear-gradient(180deg,var(--bg-a),#eef4ff); color:#0f172a;}
+
+        .wrap{max-width:940px; margin:36px auto; padding:16px;}
+
+        .card{
+            background:var(--card);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            overflow:hidden;
+        }
+
+        .card-header{
+            padding:20px 22px;
+            background:linear-gradient(90deg,var(--accent),#00a4ff);
+            color:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+        }
+        .card-header h1{margin:0; font-size:18px; font-weight:600}
+        .card-header p{margin:0; font-size:13px; opacity:0.95}
+
+        .card-body{padding:22px}
+
+        .lead{color:var(--muted); margin-bottom:14px; font-size:15px; line-height:1.45}
+
+        form{
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+            margin-bottom:18px;
+        }
+
+        label{font-weight:600; color:#0f172a; font-size:14px}
+        .hint{font-size:13px; color:var(--muted); margin-top:-8px; margin-bottom:6px}
+
+        .input-row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+        input[type="text"]{
+            flex:1 1 420px;
+            padding:12px 14px;
+            border-radius:10px;
+            border:1px solid #d2d8e7;
+            font-size:14px;
+            outline:none;
+            transition:box-shadow .18s, border-color .18s;
+            background:#fbfdff;
+        }
+        input[type="text"]:focus{border-color:var(--accent); box-shadow:0 6px 18px rgba(37,99,235,0.08)}
+
+        button{
+            background:linear-gradient(90deg,var(--accent),#1e6fe8);
+            color:#fff;
+            border:none;
+            padding:11px 18px;
+            border-radius:10px;
+            font-weight:600;
+            cursor:pointer;
+            transition:transform .14s ease, box-shadow .14s;
+        }
+        button:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(37,99,235,0.12)}
+
+        /* Result / error */
+        .panel{
+            border-radius:10px;
+            padding:14px;
+            margin-top:12px;
+            border:1px solid rgba(15,23,42,0.04);
+            background:linear-gradient(180deg,#ffffff,#fbfdff);
+        }
+
+        pre {
+            background:#0b1220;
+            color:#dbeafe;
+            padding:12px;
+            border-radius:8px;
+            overflow:auto;
+            max-height:360px;
+            white-space:pre-wrap;
+            word-break:break-word;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+            font-size:13px;
+            line-height:1.45;
+        }
+
+        .note{display:inline-block; padding:8px 12px; border-radius:999px; background:#ecfdf5; color:var(--success); font-weight:700}
+        .warning{display:inline-block; padding:8px 12px; border-radius:999px; background:#fff1f2; color:var(--danger); font-weight:700}
+
+        .meta{font-size:13px; color:var(--muted); margin-top:8px}
+
+        a.btn-link{
+            display:inline-block;
+            margin-top:14px;
+            padding:8px 14px;
+            border-radius:10px;
+            text-decoration:none;
+            background:#f3f6ff;
+            color:var(--accent);
+            font-weight:600;
+            border:1px solid rgba(37,99,235,0.06);
+        }
+
+        @media (max-width:720px){
+            .card-body{padding:18px}
+            .input-row{flex-direction:column; align-items:stretch}
+            input[type="text"]{width:100%}
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="card" role="region" aria-labelledby="ssrf-title">
+        <div class="card-header">
+            <div>
+                <h1 id="ssrf-title">SSRF Safe File Reader</h1>
+                <p>Read remote content safely by using strict validation & whitelisting</p>
+            </div>
+            <div>
+                <span class="note">SSRF Protections Enabled</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <p class="lead">This secure demo performs strict URL validation and restricts requests to a small whitelist (e.g., allowed hosts or internal endpoints). Use caution when testing — this page demonstrates safe handling.</p>
+
+            <form th:action="@{/ssrf-read-file}" method="post" novalidate>
+                <div>
+                    <label for="fileUrl">URL to read</label>
+                    <div class="hint">Only whitelisted hosts and allowed schemes (http/https) are accepted. Local/internal addresses are blocked unless explicitly allowed by the whitelist.</div>
+                </div>
+
+                <div class="input-row">
+                    <input type="text" id="fileUrl" name="fileUrl"
+                           th:value="${fileUrl != null ? fileUrl : 'http://localhost:8080/internal_data.txt'}"
+                           placeholder="https://example.com/data.txt or http://localhost:8080/internal_data.txt" required />
+
+                    <button type="submit">Read Content</button>
+                </div>
+            </form>
+
+            <div th:if="${fileContent}" class="panel" aria-live="polite">
+                <h3 style="margin:0 0 10px 0; color:#0f172a">Content from URL</h3>
+                <pre th:text="${fileContent}">File contents will appear here...</pre>
+                <div class="meta">Source: <code th:text="${fileUrl}">http://localhost:8080/internal_data.txt</code></div>
+            </div>
+
+            <div th:if="${error}" class="panel" role="alert" aria-live="assertive">
+                <h3 style="margin:0 0 10px 0; color:var(--danger)">Error</h3>
+                <p style="color:var(--danger); font-weight:600; margin:0 0 8px 0" th:text="${error}">Validation or network error message</p>
+                <div class="meta">If you believe this is a false positive, check the whitelist configuration or server logs.</div>
+            </div>
+
+            <a th:href="@{/dashboard}" class="btn-link">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

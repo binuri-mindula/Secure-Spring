@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SSRF Vulnerable Demo</title>
+</head>
+<body>
+<h1>SSRF Vulnerable File Reader</h1>
+<p>This application can read content from a specified URL. (e.g., useful for fetching product descriptions from partners)</p>
+<p>However, it's vulnerable to SSRF.</p>
+<form action="/ssrf-read-file" method="post">
+    <label for="fileUrl">URL to read:</label><br>
+    <input type="text" id="fileUrl" name="fileUrl" value="http://localhost:8080/internal_data.txt" size="60"/><br><br>
+    <button type="submit">Read Content</button>
+</form>
+</body>
+</html>

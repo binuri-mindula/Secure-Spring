@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SSRF Result</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container { max-width: 800px; margin: auto; padding: 20px; background-color: #fff; border-radius: 8px; border: 1px solid #cce5ff; }
+        h1 { color: #2a6a8c; }
+        pre { background-color: #f8f9fa; padding: 12px; border: 1px dashed #ced4da; border-radius: 4px; white-space: pre-wrap; word-break: break-word; }
+        .error { color: #dc3545; font-weight: bold; margin-top: 20px; }
+        a { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>SSRF Result</h1>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <div th:if="${fileContent}">
+        <h2>File Content:</h2>
+        <pre th:text="${fileContent}"></pre>
+    </div>
+
+    <a th:href="@{/ssrf-safe}" class="btn-link">Go Back</a>
+</div>
+</body>
+</html>
