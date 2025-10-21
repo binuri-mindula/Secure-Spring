@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | SecureApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #007bff, #6c63ff);
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        /* Container */
+        .container {
+            background: #fff;
+            width: 100%;
+            max-width: 950px;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, #007bff, #00b4ff);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .header p {
+            margin-top: 8px;
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* Content area */
+        .content {
+            padding: 30px 40px;
+        }
+
+        h2 {
+            color: #007bff;
+            font-size: 20px;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+
+        ul li {
+            margin-bottom: 12px;
+        }
+
+        ul li a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        ul li a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        /* Role access sections */
+        .role-access {
+            background: #f8f9fa;
+            border-left: 5px solid #007bff;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .role-access:hover {
+            background: #eef4ff;
+            transform: translateY(-2px);
+        }
+
+        .role-access h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .role-access p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .role-access a {
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        /* Logout section */
+        .logout-form {
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        .logout-button {
+            background: linear-gradient(90deg, #dc3545, #ff4d6d);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: linear-gradient(90deg, #b71c1c, #e63946);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            ul li a {
+                font-size: 14px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Welcome, <span sec:authentication="name">User</span> 👋</h1>
+        <p>Your roles: <span sec:authentication="authorities">Roles</span></p>
+    </div>
+
+    <div class="content">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a th:href="@{/profile-protected-spring}">Spring Security CSRF Protected Profile</a></li>
+            <li><a th:href="@{/profile}">Custom CSRF Protected Profile</a></li>
+            <li><a th:href="@{/xss-safe-form}">XSS Safe</a></li>
+            <li><a th:href="@{/sql-safe-sp}">SQL Safe Stored Procedures</a></li>
+            <li><a th:href="@{/sql-safe-hql}">SQL Safe HQL</a></li>
+            <li><a th:href="@{/upload-safe}">File Upload Safe</a></li>
+            <li><a th:href="@{/data-aggregation-safe}">Data Aggregation Safe</a></li>
+            <li><a th:href="@{/ssrf-safe}">SSRF Safe</a></li>
+        </ul>
+
+        <h2>Role-Based Access Demos</h2>
+
+        <div class="role-access">
+            <h3>👤 User Section</h3>
+            <p>Access granted to users with <code>ROLE_USER</code> (user, admin).</p>
+            <p sec:authorize="hasAnyRole('USER', 'ADMIN')"><a th:href="@{/user/dashboard}">Go to User Dashboard</a></p>
+            <p sec:authorize="!hasAnyRole('USER', 'ADMIN')">You do not have access to the User Dashboard.</p>
+        </div>
+
+        <div class="role-access">
+            <h3>🛠 Admin Section</h3>
+            <p>Access granted to users with <code>ROLE_ADMIN</code> (admin).</p>
+            <p sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/panel}">Go to Admin Panel</a></p>
+            <p sec:authorize="!hasRole('ADMIN')">You do not have access to the Admin Panel.</p>
+        </div>
+
+        <div class="role-access">
+            <h3>👁 Viewer Section</h3>
+            <p>Access granted to users with <code>ROLE_VIEWER</code>, <code>ROLE_USER</code>, or <code>ROLE_ADMIN</code>.</p>
+            <p sec:authorize="hasAnyRole('VIEWER', 'USER', 'ADMIN')"><a th:href="@{/viewer/page}">Go to Viewer Page</a></p>
+            <p sec:authorize="!hasAnyRole('VIEWER', 'USER', 'ADMIN')">You do not have access to the Viewer Page.</p>
+        </div>
+
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>Admin Panel | SecureApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #007bff, #6c63ff);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            color: #222;
+        }
+
+        /* Panel card */
+        .panel {
+            width: 100%;
+            max-width: 980px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+            overflow: hidden;
+            animation: appear .5s ease;
+        }
+
+        /* Top header */
+        .panel-header {
+            background: linear-gradient(90deg,#ff6b6b,#dc3545);
+            color: #fff;
+            padding: 26px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .panel-header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+        }
+        .btn.secondary {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .btn.secondary:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
+
+        /* Body */
+        .panel-body {
+            padding: 28px 32px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 24px;
+        }
+
+        /* Left column - navigation buttons */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 14px;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: linear-gradient(180deg, #f8f9ff, #ffffff);
+            border-radius: 12px;
+            border: 1px solid #e7eaf3;
+            text-decoration: none;
+            color: #0b3b8a;
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(10,30,80,0.04);
+            transition: transform .18s ease, box-shadow .18s ease;
+            text-align: center;
+        }
+        .nav-btn:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(10,30,80,0.09);
+        }
+        .nav-btn .label {
+            display:block;
+            font-size: 14px;
+        }
+
+        /* Right column - admin info */
+        .info-card {
+            background: linear-gradient(180deg, #ffffff, #fbfdff);
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid #eef3ff;
+            box-shadow: 0 6px 20px rgba(7,18,60,0.03);
+        }
+        .info-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #222;
+        }
+        .info-card p { color: #555; margin-bottom: 10px; font-size: 14px; }
+        .info-row { display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+        .chip {
+            background:#f1f7ff;
+            color:#0b3b8a;
+            padding:8px 10px;
+            border-radius: 999px;
+            font-weight:600;
+            font-size:13px;
+            border:1px solid #e1efff;
+        }
+
+        /* Footer actions inside card */
+        .card-actions {
+            margin-top: 16px;
+            display:flex;
+            gap:10px;
+        }
+        .btn.ghost {
+            background: transparent;
+            border: 1px solid #dbe8ff;
+            color: #0b3b8a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .btn.primary {
+            background: linear-gradient(90deg,#007bff,#0056d6);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 10px;
+        }
+
+        /* small details */
+        .meta { font-size:13px; color:#6b7280; margin-top:6px; }
+
+        /* Responsive */
+        @media (max-width: 920px) {
+            .panel-body { grid-template-columns: 1fr; }
+            .nav-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 540px) {
+            .nav-grid { grid-template-columns: 1fr; }
+            .panel-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .header-actions { width: 100%; justify-content: flex-start; }
+        }
+
+        @keyframes appear {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="panel">
+    <div class="panel-header">
+        <h1>Admin Panel</h1>
+        <div class="header-actions">
+            <a th:href="@{/dashboard}" class="btn secondary">Back to Dashboard</a>
+            <!-- If you prefer a POST logout keep your existing form; a simple link is shown for convenience -->
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:10px 12px;border-radius:10px;">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <!-- Left: navigation buttons -->
+        <div>
+            <p class="meta">Quick Access</p>
+            <div class="nav-grid" role="navigation" aria-label="Admin navigation">
+                <a th:href="@{/profile-protected-spring}" class="nav-btn" title="Spring Security CSRF Protected Profile">
+                    <span class="label">Spring Security CSRF Protected Profile</span>
+                </a>
+
+                <a th:href="@{/profile}" class="nav-btn" title="Custom CSRF Protected Profile">
+                    <span class="label">Custom CSRF Protected Profile</span>
+                </a>
+
+
+                <a th:href="@{/xss-safe-form}" class="nav-btn" title="XSS Vulnerable Demo">
+                    <span class="label">XSS Safe</span>
+                </a>
+
+                <a th:href="@{/sql-safe-sp}" class="nav-btn" title="SQL Injection Vulnerable Demo">
+                    <span class="label">SQL Injection Safe Stored Procedures</span>
+                </a>
+
+                <a th:href="@{/sql-safe-hql}" class="nav-btn" title="File Upload Vulnerable Demo">
+                    <span class="label">SQL Safe HQL</span>
+                </a>
+                <a th:href="@{/upload-safe}" class="nav-btn" title="Vulnerable Profile (for comparison)">
+                    <span class="label">File Upload Safe</span>
+                </a>
+                <a th:href="@{/data-aggregation-safe}" class="nav-btn" title="Vulnerable Profile (for comparison)">
+                    <span class="label">Data Aggregation Safe</span>
+                </a>
+                <a th:href="@{/ssrf-safe}" class="nav-btn" title="Vulnerable Profile (for comparison)">
+                    <span class="label">SSRF Safe</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right: admin info -->
+        <aside class="info-card" aria-label="Admin info">
+            <h3 th:text="${message}">Admin message or status</h3>
+            <p>Logged in as: <strong th:text="${username}">admin</strong></p>
+
+            <div class="info-row">
+                <span class="chip">ROLE_ADMIN</span>
+                <span class="chip">ROLE_USER</span>
+                <span class="chip">ROLE_VIWER</span>
+            </div>
+
+
+        </aside>
+    </div>
+</div>
+</body>
+</html>

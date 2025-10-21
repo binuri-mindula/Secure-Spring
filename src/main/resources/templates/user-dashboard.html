@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard | SecureApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /* Base */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Dashboard Container */
+        .dashboard-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            padding: 40px 50px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        /* Header */
+        h1 {
+            color: #007bff;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            background: #eaf4ff;
+            color: #004085;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 15px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #444;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #007bff, #00a8ff);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn:hover {
+            background: linear-gradient(90deg, #0062cc, #0094e3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .dashboard-card {
+                padding: 30px 25px;
+            }
+            h1 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-card">
+    <h1>User Dashboard</h1>
+    <p class="message" th:text="${message}">Welcome to your user dashboard!</p>
+    <p>Logged in as: <strong th:text="${username}">user</strong></p>
+
+    <div style="margin-top: 25px;">
+        <a th:href="@{/dashboard}" class="btn">Back to Main Dashboard</a>
+    </div>
+</div>
+</body>
+</html>

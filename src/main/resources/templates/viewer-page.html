@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Viewer Page | SecureApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Card Container */
+        .viewer-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            padding: 40px 50px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        /* Header */
+        h1 {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Message box */
+        .message {
+            background: #e9f7ef;
+            color: #155724;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 15px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #444;
+        }
+
+        strong {
+            color: #222;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #28a745, #38c172);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(90deg, #218838, #2ebf74);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .viewer-card {
+                padding: 30px 25px;
+            }
+            h1 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+<div class="viewer-card">
+    <h1>Viewer Page</h1>
+    <p class="message" th:text="${message}">Welcome to the viewer page!</p>
+    <p>Logged in as: <strong th:text="${username}">viewer</strong></p>
+
+    <a th:href="@{/dashboard}" class="btn">Back to Main Dashboard</a>
+</div>
+</body>
+</html>
